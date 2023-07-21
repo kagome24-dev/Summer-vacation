@@ -1,26 +1,82 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Are you human ?</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <style>
-        body{
-            text-align: center;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Are you human ?</title>
+  <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css" />
+  <!-- Don't use this in production: -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
+
 <body>
-    <p class="is-size-3"><b>Are you human ?</b></p>
-    <p>下のチェックボックスをクリックして人間かどうか確かめましょう。</p>
-    <div class="has-text-center">
-        <form action="?" method="POST">
-            <div class="g-recaptcha" data-sitekey="6LdqCzwnAAAAAFYaDJsdwJtVtoSrcakQIPycBZZ4"></div>
-            <br/>
-            <input type="submit" value="Submit">
-        </form>
-    </div>
+  <div id="root"></div>
+  <script type="text/babel">
+    const se = new Audio('tada.wav');
+    const App = () => {
+      const [verified, setVerified] = React.useState(false);
+      React.useEffect(() => {
+        grecaptcha.render('html_element', {
+          sitekey: '6LdqCzwnAAAAAFYaDJsdwJtVtoSrcakQIPycBZZ4',
+          callback: (response) => {
+            se.play();
+            setVerified(true);
+          }
+        });
+      }, []);
+      return (
+        <div>
+          {verified ? (
+            <section className="hero is-primary is-fullheight">
+              <div className="hero-body">
+                <div className="container has-text-centered">
+                  <p className="title">
+                    おめでとうございます。あなたは人間です。
+                  </p>
+                  <p className="subtitle">
+                    ご安心ください。あなたはテストを突破することにより人間だと証明されました。
+                  </p>
+                </div>
+              </div>
+            </section>
+          ) : (
+            <section className="hero is-fullheight">
+              <div className="hero-body">
+                <div className="container has-text-centered">
+                  <p className="title">
+                    Are you human?
+                  </p>
+                  <p className="subtitle">
+                    下のチェックボックスをクリックして確かめてみましょう。
+                  </p>
+                  <div style={{
+                    marginRight: 'auto',
+                    marginLeft: 'auto',
+                    textAlign: 'center',
+                    width: '300px',
+                    marginTop: '20px'
+                  }}>
+                    <div id="html_element"></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          )}
+        </div>
+      )
+    }
+    const onloadCallback = () => {
+      ReactDOM.render(
+        <App />,
+        document.getElementById('root')
+      );
+    };
+  </script>
+  <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer>
+  </script>
+
 </body>
+
 </html>
